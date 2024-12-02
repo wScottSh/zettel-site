@@ -36,10 +36,9 @@ function Note({ id, title, content, position }) {
   return (
     <div className="note">
       <h2>{title}</h2>
-      <div 
-        className="note-content"
-        dangerouslySetInnerHTML={{ __html: parsedContent }}
-      />
+      <div className="note-content">
+        {parsedContent}
+      </div>
       <BacklinksContainer backlinks={backlinks} position={position} />
     </div>
   );
