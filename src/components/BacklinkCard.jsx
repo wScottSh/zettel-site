@@ -8,14 +8,13 @@ function BacklinkCard({ id, title, excerpt }) {
   
   const handleClick = (e) => {
     e.preventDefault();
-    const currentNotes = new Set(searchParams.getAll('note'));
-    currentNotes.add(id);
-    setSearchParams({ note: Array.from(currentNotes) });
+    const currentNotes = searchParams.getAll('note');
+    setSearchParams({ note: [...currentNotes, id] });
   };
 
   return (
     <div className="backlink-card">
-      <h3><a href="#" onClick={handleClick}>{title}</a></h3>
+      <h3><a href="#" onClick={handleClick} className="note-link">{title}</a></h3>
       <p dangerouslySetInnerHTML={{ __html: formattedExcerpt }} />
     </div>
   );

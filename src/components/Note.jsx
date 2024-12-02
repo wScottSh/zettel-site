@@ -10,9 +10,8 @@ function Note({ id, title, content }) {
 
   useEffect(() => {
     window._handleNoteLinkClick = (noteId) => {
-      const currentNotes = new Set(searchParams.getAll('note'));
-      currentNotes.add(noteId);
-      setSearchParams({ note: Array.from(currentNotes) });
+      const currentNotes = searchParams.getAll('note');
+      setSearchParams({ note: [...currentNotes, noteId] });
     };
 
     return () => {
