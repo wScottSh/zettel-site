@@ -2,7 +2,7 @@
 import React from 'react';
 import BacklinkCard from './BacklinkCard';
 
-function BacklinksContainer({ backlinks }) {
+function BacklinksContainer({ backlinks, position }) {
   if (!backlinks || backlinks.length === 0) return null;
 
   return (
@@ -10,7 +10,11 @@ function BacklinksContainer({ backlinks }) {
       <h3 className="backlinks-title">Referenced in:</h3>
       <div className="backlinks-grid">
         {backlinks.map((backlink, index) => (
-          <BacklinkCard key={index} {...backlink} />
+          <BacklinkCard
+            key={index}
+            {...backlink}
+            position={position}
+          />
         ))}
       </div>
     </div>

@@ -21,7 +21,11 @@ function NotesContainer({ noteIds }) {
   return (
     <section className="notes-container" ref={containerRef}>
       {displayedNotes.map((note, index) => (
-        <Note key={`${note.id}-${index}`} {...note} />
+        <Note 
+          key={`${note.id}-${index}`} 
+          {...note} 
+          position={index}
+        />
       ))}
     </section>
   );

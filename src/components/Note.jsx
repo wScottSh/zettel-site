@@ -4,22 +4,33 @@ import { useSearchParams } from 'react-router-dom';
 import BacklinksContainer from './BacklinksContainer';
 import { parseLinks } from '../utils/parseLinks';
 import { findBacklinks } from '../utils/findBacklinks';
+import { insertNoteAfterPosition } from '../utils/noteNavigation';
 
-function Note({ id, title, content }) {
+function Note({ id, title, content, position }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     window._handleNoteLinkClick = (noteId) => {
       const currentNotes = searchParams.getAll('note');
-      setSearchParams({ note: [...currentNotes, noteId] });
+      // Explicitly truncate and insert
+      const updatedNotes = currentNotes.slice(0, position + 1);
+      updatedNotes.push(noteId);
+      setSearchParams({ note: updatedNotes });
     };
 
     return () => {
       delete window._handleNoteLinkClick;
     };
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, position]);
 
-  const parsedContent = parseLinks(content);
+  const handleNoteLinkClick = (noteId) => {
+    const currentNotes = searchParams.getAll('note');
+    const updatedNotes = currentNotes.slice(0, position + 1);
+    updatedNotes.push(noteId);
+    setSearchParams({ note: updatedNotes });
+  };
+
+  const parsedContent = parseLinks(content, handleNoteLinkClick);
   const backlinks = findBacklinks(id);
 
   return (
@@ -29,7 +40,7 @@ function Note({ id, title, content }) {
         className="note-content"
         dangerouslySetInnerHTML={{ __html: parsedContent }}
       />
-      <BacklinksContainer backlinks={backlinks} />
+      <BacklinksContainer backlinks={backlinks} position={position} />
     </div>
   );
 }
