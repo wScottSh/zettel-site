@@ -18,6 +18,10 @@ function NotesContainer({ noteIds }) {
     }
   }, [displayedNotes.length]);
 
+  if (displayedNotes.length === 0) {
+    return <div>No notes found.</div>;
+  }
+
   return (
     <section className="notes-container" ref={containerRef}>
       {displayedNotes.map((note, index) => (
