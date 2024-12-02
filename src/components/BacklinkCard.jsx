@@ -3,16 +3,17 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { insertNoteAfterPosition } from '../utils/noteNavigation';
 
-function BacklinkCard({ id, title, excerpt, position }) {
+function BacklinkCard({ id, title, excerpt, position, noteIds }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const formattedExcerpt = excerpt.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   
   const handleClick = (e) => {
     e.preventDefault();
-    const currentNotes = searchParams.getAll('note');
+    const currentNotes = noteIds; // Use noteIds passed from BacklinksContainer
     const updatedNotes = currentNotes.slice(0, position + 1);
     updatedNotes.push(id);
-    setSearchParams({ note: updatedNotes });
+    const updatedSearchParams = updatedNotes.slice(1); // Exclude pathNoteId
+    setSearchParams({ note: updatedSearchParams });
   };
 
   return (

@@ -6,7 +6,7 @@ import { parseLinks } from '../utils/parseLinks';
 import { findBacklinks } from '../utils/findBacklinks';
 import { insertNoteAfterPosition } from '../utils/noteNavigation';
 
-function Note({ id, title, content, position }) {
+function Note({ id, title, content, position, noteIds }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -24,10 +24,11 @@ function Note({ id, title, content, position }) {
   }, [searchParams, setSearchParams, position]);
 
   const handleNoteLinkClick = (noteId) => {
-    const currentNotes = searchParams.getAll('note');
+    const currentNotes = noteIds; // Use noteIds passed from NotesContainer
     const updatedNotes = currentNotes.slice(0, position + 1);
     updatedNotes.push(noteId);
-    setSearchParams({ note: updatedNotes });
+    const updatedSearchParams = updatedNotes.slice(1); // Exclude pathNoteId
+    setSearchParams({ note: updatedSearchParams });
   };
 
   const parsedContent = parseLinks(content, handleNoteLinkClick);
@@ -39,7 +40,7 @@ function Note({ id, title, content, position }) {
       <div className="note-content">
         {parsedContent}
       </div>
-      <BacklinksContainer backlinks={backlinks} position={position} />
+      <BacklinksContainer backlinks={backlinks} position={position} noteIds={noteIds} />
     </div>
   );
 }

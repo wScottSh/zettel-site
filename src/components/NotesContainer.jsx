@@ -25,6 +25,7 @@ function NotesContainer({ noteIds }) {
           key={`${note.id}-${index}`} 
           {...note} 
           position={index}
+          noteIds={noteIds} // Pass noteIds to Note
         />
       ))}
     </section>

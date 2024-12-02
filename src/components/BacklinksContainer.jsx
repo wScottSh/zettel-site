@@ -2,7 +2,7 @@
 import React from 'react';
 import BacklinkCard from './BacklinkCard';
 
-function BacklinksContainer({ backlinks, position }) {
+function BacklinksContainer({ backlinks, position, noteIds }) {
   if (!backlinks || backlinks.length === 0) return null;
 
   return (
@@ -14,6 +14,7 @@ function BacklinksContainer({ backlinks, position }) {
             key={index}
             {...backlink}
             position={position}
+            noteIds={noteIds} // Pass noteIds to BacklinkCard
           />
         ))}
       </div>
