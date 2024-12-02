@@ -5,6 +5,7 @@ import BacklinksContainer from './BacklinksContainer';
 import { parseLinks } from '../utils/parseLinks';
 import { findBacklinks } from '../utils/findBacklinks';
 import { insertNoteAfterPosition } from '../utils/noteNavigation';
+import { formatNoteDate } from '../utils/dateFormatter';
 
 function Note({ id, title, content, position, noteIds }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -37,6 +38,7 @@ function Note({ id, title, content, position, noteIds }) {
   return (
     <div className="note">
       <h2>{title}</h2>
+      <div className="note-date">Written: {formatNoteDate(id)}</div>
       <div className="note-content">
         {parsedContent}
       </div>

@@ -78,6 +78,13 @@ html, body {
   color: var(--md-on-surface);
 }
 
+.note-date {
+  font-size: 14px;
+  color: var(--md-outline);
+  font-weight: normal;
+  margin: 0 0 24px 0;
+}
+
 .note-content {
   font-size: 17px;
   line-height: 24px;
