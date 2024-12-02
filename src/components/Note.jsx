@@ -1,19 +1,19 @@
 // src/components/Note.jsx
 import React from 'react';
 import BacklinksContainer from './BacklinksContainer';
+import { parseLinks } from '../utils/parseLinks';
 
-function Note({ title, content }) {
-  // Sample backlinks data
-  const sampleBacklinks = [
-    { title: "Note A", excerpt: "Reference to this note in context..." },
-    { title: "Note B", excerpt: "Another reference to this note..." },
-  ];
+function Note({ id, title, content }) {
+  const parsedContent = parseLinks(content);
 
   return (
     <div className="note">
       <h2>{title}</h2>
-      <div className="note-content">{content}</div>
-      <BacklinksContainer backlinks={sampleBacklinks} />
+      <div 
+        className="note-content"
+        dangerouslySetInnerHTML={{ __html: parsedContent }}
+      />
+      <BacklinksContainer backlinks={[]} />
     </div>
   );
 }
