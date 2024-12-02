@@ -62,19 +62,11 @@ html, body {
 .note {
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  width: 625px;
-  max-width: 625px;
+  width: 560px;
   background-color: var(--md-surface);
-  /* border-radius: 16px; */
-  /* box-shadow: var(--md-elevation-1); */
-  padding: 16px;
-  /* margin: 8px; */
+  padding: 32px;
   overflow-y: auto;
   height: calc(100vh - 100px);
-}
-
-.note:hover {
-  box-shadow: var(--md-elevation-2);
 }
 
 .note h2 {
