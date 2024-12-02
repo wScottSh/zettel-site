@@ -16,8 +16,8 @@ function BacklinkCard({ id, title, excerpt, position }) {
   };
 
   return (
-    <div className="backlink-card">
-      <h3><a href="#" onClick={handleClick} className="note-link">{title}</a></h3>
+    <div className="backlink-card" onClick={handleClick} role="button" tabIndex={0}>
+      <h3>{title}</h3>
       <p dangerouslySetInnerHTML={{ __html: formattedExcerpt }} />
     </div>
   );

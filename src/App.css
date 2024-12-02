@@ -112,10 +112,16 @@ html, body {
   padding: 16px;
   box-shadow: var(--md-elevation-1);
   transition: box-shadow 200ms ease;
+  cursor: pointer;
 }
 
 .backlink-card:hover {
   box-shadow: var(--md-elevation-2);
+}
+
+.backlink-card:focus {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
 }
 
 .backlink-card h3 {
