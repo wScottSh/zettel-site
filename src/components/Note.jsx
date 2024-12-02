@@ -2,9 +2,11 @@
 import React from 'react';
 import BacklinksContainer from './BacklinksContainer';
 import { parseLinks } from '../utils/parseLinks';
+import { findBacklinks } from '../utils/findBacklinks';
 
 function Note({ id, title, content }) {
   const parsedContent = parseLinks(content);
+  const backlinks = findBacklinks(id);
 
   return (
     <div className="note">
@@ -13,7 +15,7 @@ function Note({ id, title, content }) {
         className="note-content"
         dangerouslySetInnerHTML={{ __html: parsedContent }}
       />
-      <BacklinksContainer backlinks={[]} />
+      <BacklinksContainer backlinks={backlinks} />
     </div>
   );
 }

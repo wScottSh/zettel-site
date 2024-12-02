@@ -41,7 +41,6 @@ html, body {
   flex-grow: 1;
   display: flex;
   overflow-x: auto;
-  /* padding: 16px; */
   gap: 1px;
   scroll-behavior: smooth;
 }
@@ -66,7 +65,7 @@ html, body {
   background-color: var(--md-surface);
   padding: 32px;
   overflow-y: auto;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 120px);
 }
 
 .note h2 {
