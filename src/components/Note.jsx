@@ -1,54 +1,95 @@
 // src/components/Note.jsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import BacklinksContainer from './BacklinksContainer';
-import { parseLinks } from '../utils/parseLinks';
 import { findBacklinks } from '../utils/findBacklinks';
-import { insertNoteAfterPosition } from '../utils/noteNavigation';
 import { formatNoteDate } from '../utils/dateFormatter';
 
 function Note({ id, title, content, position, noteIds }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    window._handleNoteLinkClick = (noteId) => {
-      const currentNotes = searchParams.getAll('note');
-      // Explicitly truncate and insert
-      const updatedNotes = currentNotes.slice(0, position + 1);
-      updatedNotes.push(noteId);
-      setSearchParams({ note: updatedNotes });
-    };
-
-    return () => {
-      delete window._handleNoteLinkClick;
-    };
-  }, [searchParams, setSearchParams, position]);
-
   const handleNoteLinkClick = (noteId) => {
-    const currentNotes = noteIds; // Use noteIds passed from NotesContainer
+    const currentNotes = noteIds;
     const updatedNotes = currentNotes.slice(0, position + 1);
     updatedNotes.push(noteId);
-    const updatedSearchParams = updatedNotes.slice(1); // Exclude pathNoteId
+    const updatedSearchParams = updatedNotes.slice(1);
     setSearchParams({ note: updatedSearchParams });
   };
 
+  // Custom remark plugin for wiki-style links
+  const remarkWikiLinks = () => (tree) => {
+    function visitor(node) {
+      if (node.type === 'text' && node.value.includes('[[')) {
+        const segments = node.value.split(/(\[\[\d+[^\]]*\]\])/g);
+        const children = segments.map(segment => {
+          const wikiLink = segment.match(/^\[\[(\d+)(?:\s+([^\]]+))?\]\]$/);
+          if (wikiLink) {
+            const [_, noteId, linkText] = wikiLink;
+            return {
+              type: 'link',
+              url: `#${noteId}`,
+              data: { noteId },
+              children: [{
+                type: 'text',
+                value: linkText || noteId
+              }]
+            };
+          }
+          return {
+            type: 'text',
+            value: segment
+          };
+        });
+        return children;
+      }
+    }
+
+    const transform = (node) => {
+      if (Array.isArray(node.children)) {
+        const newChildren = [];
+        for (const child of node.children) {
+          const result = visitor(child);
+          if (Array.isArray(result)) {
+            newChildren.push(...result);
+          } else if (result) {
+            newChildren.push(result);
+          } else {
+            newChildren.push(child);
+          }
+          if (child.children) {
+            transform(child);
+          }
+        }
+        node.children = newChildren;
+      }
+    };
+
+    transform(tree);
+  };
+
   const components = {
-    link: ({ href, children }) => {
-      const match = href.match(/^\[\[(\d+)(?:\s+.*?)?\]\]$/);
-      if (match) {
-        const noteId = match[1];
+    a: ({ href, children }) => {
+      if (href.startsWith('#')) {
+        const noteId = href.slice(1);
         return (
-          <a href="#" onClick={() => handleNoteLinkClick(noteId)}>
+          <a
+            href="#"
+            className="note-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNoteLinkClick(noteId);
+            }}
+          >
             {children}
           </a>
         );
       }
-      return <a href={href}>{children}</a>;
-    },
+      return <a href={href} className="note-link">{children}</a>;
+    }
   };
 
-  const parsedContent = parseLinks(content, handleNoteLinkClick);
   const backlinks = findBacklinks(id);
 
   return (
@@ -56,7 +97,10 @@ function Note({ id, title, content, position, noteIds }) {
       <h2>{title}</h2>
       <div className="note-date">Written: {formatNoteDate(id)}</div>
       <div className="note-content">
-        <ReactMarkdown components={components}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkWikiLinks]}
+          components={components}
+        >
           {content}
         </ReactMarkdown>
       </div>
