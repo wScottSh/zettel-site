@@ -1,5 +1,5 @@
 // src/components/Note.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -9,6 +9,7 @@ import { formatNoteDate } from '../utils/dateFormatter';
 
 function Note({ id, title, content, position, noteIds }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const handleNoteLinkClick = (noteId) => {
     const currentNotes = noteIds;
@@ -16,6 +17,16 @@ function Note({ id, title, content, position, noteIds }) {
     updatedNotes.push(noteId);
     const updatedSearchParams = updatedNotes.slice(1);
     setSearchParams({ note: updatedSearchParams });
+  };
+
+  const handleDateClick = async () => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setShowTooltip(true);
+      setTimeout(() => setShowTooltip(false), 1500);
+    } catch (err) {
+      console.error('Failed to copy ID:', err);
+    }
   };
 
   // Custom remark plugin for wiki-style links
@@ -95,7 +106,15 @@ function Note({ id, title, content, position, noteIds }) {
   return (
     <div className="note">
       <h2>{title}</h2>
-      <div className="note-date">Written: {formatNoteDate(id)}</div>
+      <div 
+        className="note-date" 
+        onClick={handleDateClick}
+      >
+        Written: {formatNoteDate(id)}
+        <div className={`tooltip ${showTooltip ? 'visible' : ''}`}>
+          Zettel ID Copied to Clipboard
+        </div>
+      </div>
       <div className="note-content">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkWikiLinks]}
